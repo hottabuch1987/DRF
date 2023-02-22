@@ -3,6 +3,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework import permissions
 
 from .models import Women, Category
 from .serializers import WomenSrializer
@@ -17,11 +18,15 @@ class WomenViewSet(mixins.CreateModelMixin,
                    GenericViewSet):
     #queryset = Women.objects.all()
     serializer_class = WomenSrializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+
 
     def get_queryset(self):                         #переопределяем queryset
         pk = self.kwargs.get('pk')
         if not pk:
-            return Women.objects.all()[:1]              #urls --- basename='women'
+            return Women.objects.all()[:3]              #urls --- basename='women'
         return Women.objects.filter(pk=pk)
 
     @action(methods=['get'], detail=False)          #добавляем маршрут категории
